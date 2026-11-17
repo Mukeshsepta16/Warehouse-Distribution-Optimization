@@ -1,0 +1,4 @@
+requirements.txt
+*.py
+legacy_streamlit/
+data/
