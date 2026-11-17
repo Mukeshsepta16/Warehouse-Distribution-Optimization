@@ -1,0 +1,47 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ---------- Virtual environments ----------
+venv/
+.venv/
+env/
+ENV/
+
+# ---------- Streamlit (legacy dashboard) ----------
+legacy_streamlit/.streamlit/secrets.toml
+legacy_streamlit/data/
+legacy_streamlit/transport.py
+
+# ---------- Node (if you add npm tooling later) ----------
+node_modules/
+
+# ---------- Editors / IDEs ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---------- OS files ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Office temp / lock files ----------
+~$*
+.~lock.*#
+
+# ---------- Logs and local environment ----------
+*.log
+.env
+.env.*
+
+# ---------- Generated output (re-creatable) ----------
+*.pdf

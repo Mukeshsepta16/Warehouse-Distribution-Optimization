@@ -1,0 +1,6 @@
+numpy
+scipy
+# Only needed for the optional old dashboard in legacy_streamlit/:
+# streamlit>=1.50
+# pandas
+# plotly

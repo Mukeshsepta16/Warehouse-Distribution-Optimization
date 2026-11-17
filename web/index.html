@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Warehouse Distribution Optimization</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<script src="vendor/chart.umd.js"></script>
+<style>
+:root{--bg:#f4f6f7;--sf:#fff;--ink:#10263a;--mu:#5b6b78;--ln:#d9e0e5;--ac:#0f7b5f;--ac2:#f2b705;--nav:#10263a;--navt:#e9f0f4;--hero:#10263a;--herot:#f4f6f7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1a26;--sf:#12283a;--ink:#e8eff3;--mu:#97a9b6;--ln:#24425a;--ac:#3fcf9f;--nav:#08141d;--hero:#081520}}
+:root[data-theme="dark"]{--bg:#0b1a26;--sf:#12283a;--ink:#e8eff3;--mu:#97a9b6;--ln:#24425a;--ac:#3fcf9f;--nav:#08141d;--hero:#081520}
+html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--nav);z-index:60}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+a{color:inherit}.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--nav);color:var(--navt)}
+.bar{display:flex;align-items:center;gap:20px;height:64px}.brand{font:700 1.05rem "Bricolage Grotesque",sans-serif;text-decoration:none;display:flex;gap:10px;align-items:center}
+.brand i{width:26px;height:26px;border-radius:6px;background:var(--ac2);display:inline-block;position:relative}.brand i::after{content:"";position:absolute;left:11px;top:4px;bottom:4px;border-left:3px dashed var(--nav)}
+nav{margin-left:auto;display:flex;gap:6px;align-items:center}nav a{padding:8px 12px;border-radius:8px;text-decoration:none;font-size:.95rem;color:var(--navt);opacity:.85}nav a:hover,nav a:focus-visible{background:#ffffff1c;opacity:1;outline:none}
+button{font:inherit;cursor:pointer}.ib{background:none;border:1px solid #ffffff44;color:var(--navt);border-radius:8px;padding:6px 10px}#mb{display:none}
+@media(max-width:800px){#mb{display:block;margin-left:auto}nav{position:absolute;left:0;right:0;top:64px;background:var(--nav);flex-direction:column;align-items:stretch;padding:8px 20px 16px;display:none;margin:0}header.open nav{display:flex}}
+.hero{background:var(--hero);color:var(--herot);padding:56px 0 40px}.hg{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center}
+@media(max-width:900px){.hg{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem)}.hero p{color:#b8c8d3;max-width:56ch}
+.btn{display:inline-block;padding:11px 20px;border-radius:10px;font-weight:600;text-decoration:none;border:2px solid var(--ac2);background:var(--ac2);color:#10263a;margin:8px 10px 0 0}.btn.o{background:none;color:var(--herot)}
+.btn:focus-visible,input:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--ac2);outline-offset:2px}
+svg.map{width:100%;height:auto;background:#ffffff0d;border-radius:14px}.road{stroke:#f4f6f7;fill:none;stroke-dasharray:10 8;animation:mv 1.2s linear infinite}
+@keyframes mv{to{stroke-dashoffset:-18}}@media(prefers-reduced-motion:reduce){.road{animation:none}}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px}@media(max-width:800px){.kp{grid-template-columns:repeat(2,1fr)}}
+.kp div{border:1px solid #ffffff33;border-radius:12px;padding:14px 16px}.kp b{display:block;font:700 1.7rem "Bricolage Grotesque",sans-serif}.kp span{color:#b8c8d3;font-size:.85rem}.kp .g b{color:var(--ac2)}
+section{padding:56px 0}section h2{font-size:clamp(1.5rem,3vw,2.1rem)}.lead{color:var(--mu);max-width:70ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:20px}.card b{font:700 2.1rem "Bricolage Grotesque",sans-serif;color:var(--ac);display:block}
+.tag{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:99px;border:1px solid var(--ln);color:var(--mu)}.tag.v{border-color:var(--ac);color:var(--ac)}.tag.a{border-color:#b98a00;color:#b98a00}
+.tw{overflow-x:auto;border:1px solid var(--ln);border-radius:12px;background:var(--sf)}table{border-collapse:collapse;width:100%;min-width:520px}th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--ln)}th:first-child,td:first-child{text-align:left}th{font-weight:600;color:var(--mu);font-size:.9rem}tr:last-child td{border-bottom:0}
+input{font:inherit;width:84px;padding:6px 8px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);text-align:right}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:900px){.two{grid-template-columns:1fr}}
+.math{background:var(--sf);border:1px solid var(--ln);border-left:4px solid var(--ac2);border-radius:12px;padding:18px 20px;font-family:"IBM Plex Sans",serif;font-size:1.05rem;line-height:2}
+.chartbox{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:16px;position:relative;height:300px}
+details{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px 16px;margin-top:14px}summary{cursor:pointer;font-weight:600}
+.note{color:var(--mu);font-size:.9rem}footer{background:var(--nav);color:var(--navt);padding:36px 0 28px;font-size:.92rem}footer a{opacity:.85}.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+ol.ref{padding-left:20px}ol.ref li{margin:6px 0;word-break:break-word}
+</style></head><body>
+<header id="top"><div class="wrap bar"><a class="brand" href="#top"><i></i>Warehouse Distribution Optimization</a>
+<button class="ib" id="mb" aria-label="Open menu">Menu</button>
+<nav><a href="#problem">Problem</a><a href="#data">Data</a><a href="#model">Model</a><a href="#solver">Solver</a><a href="#scenarios">Scenarios</a><a href="#refs">References</a><button class="ib" id="th" aria-label="Toggle theme">Theme</button></nav></div></header>
+<main>
+<div class="hero"><div class="wrap"><div class="hg"><div>
+<h1>Ship the same stock for less</h1>
+<p>A transportation model decides how many units each warehouse sends to each retail centre. This site shows the problem, the data, the method and the saving, and lets you change the numbers and re-solve in your browser.</p>
+<a class="btn" href="#solver">Open the solver</a><a class="btn o" href="#problem">Read the research</a></div>
+<svg class="map" id="map" viewBox="0 0 420 300" role="img" aria-label="Optimal routes from three warehouses to four stores"></svg></div>
+<div class="kp" id="kp"></div></div></div>
+<section id="problem"><div class="wrap"><h2>Why distribution cost matters</h2>
+<p class="lead">India spends heavily on moving goods. The 2025 DPIIT–NCAER assessment puts national logistics cost for 2023-24 at ₹24.01 lakh crore, and transport is the largest part of it.</p>
+<div class="cards"><div class="card"><b>7.97%</b>of GDP is spent on logistics (9.09% of non-services output)<br><span class="tag v">Verified</span></div>
+<div class="card"><b>59.1%</b>of logistics cost is transportation; road freight alone is 41.7%<br><span class="tag v">Verified</span></div>
+<div class="card"><b>₹3.78</b>average road cost per tonne-km; fuel is 42.1% of road cost<br><span class="tag v">Verified</span></div></div>
+<p>A distributor serves several stores from several warehouses. Routes differ in distance, warehouses hold limited stock and every store needs a fixed quantity. Serving each store from its “usual” warehouse ignores these cost differences. Official data has no route-wise cost, so each firm must analyse its own routes. That is a job for Operations Research.</p>
+<p class="note">Source: NCAER and DPIIT, <i>Assessment of Logistics Cost in India</i>, September 2025. The report has no FMCG-specific figures, so the FMCG setting is our case-study choice.</p></div></section>
+<section id="data" style="background:var(--sf)"><div class="wrap"><h2>Data you can edit</h2>
+<p class="lead">All capacities, demands and distances are illustrative. Change any value and every result below updates. <span class="tag a">Assumed</span> <span class="tag v">Derived rate</span></p>
+<p>Rate (₹ per unit-km): <input id="rate" type="number" step="0.01" min="0.01" value="0.04"> <span class="note">₹3.78 per tonne-km × an assumed 10 kg carton ≈ ₹0.04</span></p>
+<div class="tw"><table id="dt"></table></div>
+<p class="note">Distances are approximate road kilometres; verify them on Google Maps. Cost per unit = distance × rate.</p></div></section>
+<section id="model"><div class="wrap"><h2>The mathematical model</h2>
+<div class="two"><div class="math">Minimise Z = Σ<sub>i</sub> Σ<sub>j</sub> C<sub>ij</sub> X<sub>ij</sub><br>Supply: Σ<sub>j</sub> X<sub>ij</sub> ≤ S<sub>i</sub><br>Demand: Σ<sub>i</sub> X<sub>ij</sub> = D<sub>j</sub><br>Non-negativity: X<sub>ij</sub> ≥ 0</div>
+<div><p><b>X<sub>ij</sub></b> is the units sent from warehouse i to store j, <b>C<sub>ij</sub></b> the cost per unit on that route, <b>S<sub>i</sub></b> the warehouse stock and <b>D<sub>j</sub></b> the store demand.</p>
+<p>If supply and demand differ, a dummy warehouse (unmet demand) or dummy store (unused stock) balances the problem at zero cost.</p></div></div></div></section>
+<section id="solver" style="background:var(--sf)"><div class="wrap"><h2>Solver results</h2>
+<p class="lead">Four methods run on your data. North-West Corner, Least Cost and VAM give starting plans; MODI tests a plan and improves it until no route can lower the cost.</p>
+<div class="two"><div><div class="tw"><table id="mt"></table></div><details><summary>MODI iterations</summary><div id="modi" class="note"></div></details></div>
+<div class="chartbox"><canvas id="c1" aria-label="Original versus optimized cost"></canvas></div></div>
+<h3 style="margin-top:28px">Optimal allocation (units)</h3><div class="tw"><table id="at"></table></div>
+<p class="note">Baseline = an assumed fixed “usual warehouse” plan, not observed company data. Saving = original − optimized; reduction % = saving ÷ original × 100.</p></div></section>
+<section id="scenarios"><div class="wrap"><h2>What-if scenarios</h2>
+<p class="lead">Each scenario is re-optimised. In shortage cases total cost falls only because fewer units ship, so compare cost per unit.</p>
+<div class="two"><div class="tw"><table id="st"></table></div><div class="chartbox"><canvas id="c2" aria-label="Cost per unit by scenario"></canvas></div></div></div></section>
+</main>
+<footer id="refs"><div class="wrap"><div class="fg"><div><b>Warehouse Distribution Optimization</b><br>Operations Research mini project (MAT4002, CA3). Transportation model with linear programming.</div>
+<div><b>References</b><ol class="ref"><li>NCAER and DPIIT (September 2025). <i>Assessment of Logistics Cost in India</i>. Government of India. <a href="https://ncaer.org/publication/assessment-of-logistics-cost-in-india/">ncaer.org</a></li><li>Hitchcock, F. L. (1941). The distribution of a product from several sources to numerous localities. <i>J. Math. Phys.</i>, 20, 224–230.</li></ol></div>
+<div><b>Data status</b><br>Verified: national logistics statistics. Assumed: capacities, demands, distances, baseline plan. Calculated: all costs and savings. The percentage saving applies to this dataset only.</div></div></div></footer>
+<script>
+const sum=a=>a.reduce((p,q)=>p+q,0),zeros=(m,n)=>Array.from({length:m},()=>Array(n).fill(0));
+const tc=(c,x)=>sum(c.map((r,i)=>sum(r.map((v,j)=>v*x[i][j]))));
+function balance(c,s,d){c=c.map(r=>r.slice());s=s.slice();d=d.slice();const df=sum(s)-sum(d);
+ if(df>1e-9){c.forEach(r=>r.push(0));d.push(df)}else if(df<-1e-9){c.push(c[0].map(()=>0));s.push(-df)}return{c,s,d}}
+function nwc(c,s,d){s=[...s];d=[...d];const m=s.length,n=d.length,x=zeros(m,n);let i=0,j=0;
+ while(i<m&&j<n){const q=Math.min(s[i],d[j]);x[i][j]=q;s[i]-=q;d[j]-=q;if(s[i]==0&&i<m-1)i++;else if(d[j]==0)j++;else i++}return x}
+function lcm(c,s,d){s=[...s];d=[...d];const m=s.length,n=d.length,x=zeros(m,n),o=[];
+ for(let i=0;i<m;i++)for(let j=0;j<n;j++)o.push([c[i][j],i,j]);o.sort((a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2]);
+ for(const[,i,j]of o){const q=Math.min(s[i],d[j]);if(q>0){x[i][j]+=q;s[i]-=q;d[j]-=q}}return x}
+function vam(c,s,d){s=[...s];d=[...d];const m=s.length,n=d.length,x=zeros(m,n),R=new Set([...Array(m).keys()]),C=new Set([...Array(n).keys()]);
+ const pen=v=>{v=v.sort((a,b)=>a-b);return v.length>1?v[1]-v[0]:v[0]};
+ while(R.size&&C.size){let bi=-1,bp=-1,bj=-1,cp=-1;
+  for(const i of R){const p=pen([...C].map(j=>c[i][j]));if(p>bp){bp=p;bi=i}}
+  for(const j of C){const p=pen([...R].map(i=>c[i][j]));if(p>cp){cp=p;bj=j}}
+  let i,j;if(bp>=cp){i=bi;j=[...C].reduce((a,b)=>c[i][b]<c[i][a]?b:a)}else{j=bj;i=[...R].reduce((a,b)=>c[b][j]<c[a][j]?b:a)}
+  const q=Math.min(s[i],d[j]);x[i][j]+=q;s[i]-=q;d[j]-=q;
+  if(s[i]==0&&(d[j]!=0||R.size>1))R.delete(i);else C.delete(j)}return x}
+function basisOf(x){const m=x.length,n=x[0].length,p=[...Array(m+n).keys()],f=a=>{while(p[a]!=a){p[a]=p[p[a]];a=p[a]}return a},B=new Set();
+ for(let i=0;i<m;i++)for(let j=0;j<n;j++)if(x[i][j]>1e-9){B.add(i+','+j);p[f(i)]=f(m+j)}
+ for(let i=0;i<m;i++)for(let j=0;j<n;j++){if(B.size>=m+n-1)return B;if(!B.has(i+','+j)&&f(i)!=f(m+j)){B.add(i+','+j);p[f(i)]=f(m+j)}}return B}
+function cycle(cells,st){const dfs=(path,row)=>{const[i,j]=path[path.length-1];
+  const cand=[...cells].map(k=>k.split(',').map(Number)).filter(([a,b])=>row?(a==i&&b!=j):(b==j&&a!=i));
+  for(const c of cand){if(c[0]==st[0]&&c[1]==st[1]&&path.length>=4)return path;
+   if(!path.some(p=>p[0]==c[0]&&p[1]==c[1])){const r=dfs([...path,c],!row);if(r)return r}}return null};return dfs([st],true)}
+function modi(c,x0){const m=c.length,n=c[0].length,x=x0.map(r=>r.slice()),B=basisOf(x),log=[];
+ for(let it=0;it<200;it++){const u=Array(m).fill(null),v=Array(n).fill(null);u[0]=0;let ch=true;
+  while(ch){ch=false;for(const k of B){const[i,j]=k.split(',').map(Number);
+   if(u[i]!==null&&v[j]===null){v[j]=c[i][j]-u[i];ch=true}else if(v[j]!==null&&u[i]===null){u[i]=c[i][j]-v[j];ch=true}}}
+  let dm=Infinity,e=null;for(let i=0;i<m;i++)for(let j=0;j<n;j++)if(!B.has(i+','+j)){const d=c[i][j]-u[i]-v[j];if(d<dm-1e-12){dm=d;e=[i,j]}}
+  log.push({u:[...u],v:[...v],dmin:dm,cost:tc(c,x)});if(dm>=-1e-9)break;
+  const cy=cycle(new Set([...B,e.join(',')]),e),minus=cy.filter((_,k)=>k%2==1),th=Math.min(...minus.map(([a,b])=>x[a][b])),lv=minus.find(([a,b])=>x[a][b]==th);
+  cy.forEach(([a,b],k)=>x[a][b]+=k%2==0?th:-th);B.add(e.join(','));B.delete(lv.join(','))}
+ return{x,log}}
+function solve(cost,s,d){const b=balance(cost,s,d),X={nwc:nwc(b.c,b.s,b.d),lcm:lcm(b.c,b.s,b.d),vam:vam(b.c,b.s,b.d)};
+ const o=modi(b.c,X.vam),m=cost.length,n=cost[0].length,real=o.x.slice(0,m).map(r=>r.slice(0,n));
+ return{b,X,opt:real,optCost:tc(cost,real),costs:{nwc:tc(b.c,X.nwc),lcm:tc(b.c,X.lcm),vam:tc(b.c,X.vam),modi:tc(b.c,modi(b.c,X.nwc).x)},log:modi(b.c,X.nwc).log,shipped:sum(real.map(sum))}}
+if(typeof module!=='undefined')module.exports={solve,tc,balance};
+const W=['Bengaluru','Chennai','Hyderabad'],T=['Mysuru','Mangaluru','Coimbatore','Vijayawada'];
+const DIST=[[150,350,375,650],[475,700,500,450],[750,875,875,275]],SUP=[300,250,200],DEM=[150,180,200,220];
+const BASE=[[150,0,150,0],[0,130,50,70],[0,50,0,150]];
+const $=id=>document.getElementById(id),inr=v=>'₹'+Math.round(v).toLocaleString('en-IN');
+let ch1,ch2;
+$('dt').innerHTML='<tr><th>Warehouse</th>'+T.map(t=>`<th>${t} (km)</th>`).join('')+'<th>Stock</th></tr>'+W.map((w,i)=>`<tr><td>${w}</td>${T.map((_,j)=>`<td><input aria-label="${w} to ${T[j]} km" data-d="${i},${j}" type="number" min="1" value="${DIST[i][j]}"></td>`).join('')}<td><input aria-label="${w} stock" data-s="${i}" type="number" min="0" value="${SUP[i]}"></td></tr>`).join('')+'<tr><td>Demand</td>'+T.map((t,j)=>`<td><input aria-label="${t} demand" data-m="${j}" type="number" min="0" value="${DEM[j]}"></td>`).join('')+'<td></td></tr>';
+function read(){const r=+$('rate').value||0.04,q=s=>[...document.querySelectorAll(s)];
+ const d=DIST.map(a=>a.slice()),s=[],m=[];q('[data-d]').forEach(e=>{const[i,j]=e.dataset.d.split(',');d[i][j]=+e.value||0});
+ q('[data-s]').forEach(e=>s[+e.dataset.s]=+e.value||0);q('[data-m]').forEach(e=>m[+e.dataset.m]=+e.value||0);
+ return{r,c:d.map(a=>a.map(v=>+(v*r).toFixed(2))),s,m}}
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function mat(x,hdr,hi){const mx=Math.max(1,...x.flat());return'<tr><th></th>'+T.map(t=>`<th>${t}</th>`).join('')+'<th>Total</th></tr>'+x.map((r,i)=>`<tr><td>${W[i]}</td>${r.map(v=>`<td style="background:color-mix(in srgb,var(--ac) ${Math.round(v/mx*45)}%,transparent)">${v?Math.round(v*100)/100:'–'}</td>`).join('')}<td><b>${Math.round(r.reduce((p,q)=>p+q,0))}</b></td></tr>`).join('')}
+function map(x){let s='';const wy=i=>60+i*90,ty=j=>40+j*72;
+ x.forEach((r,i)=>r.forEach((v,j)=>{if(v>1e-9)s+=`<path class="road" d="M90 ${wy(i)} C 210 ${wy(i)}, 210 ${ty(j)}, 320 ${ty(j)}" stroke-width="${1.5+v/28}"><title>${W[i]} to ${T[j]}: ${Math.round(v)} units</title></path>`}));
+ W.forEach((w,i)=>s+=`<circle cx="90" cy="${wy(i)}" r="9" fill="#f2b705"/><text x="78" y="${wy(i)+4}" text-anchor="end" fill="#f4f6f7" font-size="12">${w}</text>`);
+ T.forEach((t,j)=>s+=`<circle cx="320" cy="${ty(j)}" r="8" fill="#3fcf9f"/><text x="334" y="${ty(j)+4}" fill="#f4f6f7" font-size="12">${t}</text>`);$('map').innerHTML=s}
+function run(){const{c,s,m}=read(),R=solve(c,s,m),bc=tc(c,BASE),sv=bc-R.optCost,pc=bc?sv/bc*100:0;
+ $('kp').innerHTML=`<div><b>${inr(bc)}</b><span>Original cost (assumed plan)</span></div><div><b>${inr(R.optCost)}</b><span>Optimized cost</span></div><div class="g"><b>${inr(sv)}</b><span>Saved</span></div><div class="g"><b>${pc.toFixed(2)}%</b><span>Cost reduction</span></div>`;
+ const K=R.costs;$('mt').innerHTML='<tr><th>Method</th><th>Total cost</th><th>Gap to optimum</th></tr>'+[['North-West Corner',K.nwc],['Least Cost',K.lcm],['Vogel’s Approximation (VAM)',K.vam],['MODI (from North-West Corner)',K.modi]].map(([n,v])=>`<tr><td>${n}</td><td>${inr(v)}</td><td>${v-R.optCost<1e-6?'Optimal':inr(v-R.optCost)}</td></tr>`).join('');
+ $('modi').innerHTML=R.log.map((l,k)=>`<p><b>Iteration ${k+1}</b>: cost ${inr(l.cost)}, u = [${l.u.join(', ')}], v = [${l.v.join(', ')}]. Smallest d<sub>ij</sub> = ${(+l.dmin.toFixed(2))}: ${l.dmin<-1e-9?'negative, so shift units around the loop.':'all d<sub>ij</sub> ≥ 0, so this plan is optimal.'}</p>`).join('');
+ $('at').innerHTML=mat(R.opt);map(R.opt);
+ const tx=cv('--ink'),gr=cv('--ln');Chart.defaults.color=tx;if(ch1)ch1.destroy();
+ ch1=new Chart($('c1'),{type:'bar',data:{labels:['Original (assumed)','Optimized'],datasets:[{data:[bc,R.optCost],backgroundColor:['#b98a00',cv('--ac')],borderRadius:8}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Total transportation cost (₹)'}},scales:{y:{beginAtZero:true,grid:{color:gr}},x:{grid:{display:false}}}}});
+ const sc=[['Normal',s,m,1],['Demand +20%',s,m.map(v=>v*1.2),1],['Capacity −20%',s.map(v=>v*.8),m,1],['Cost +25%',s,m,1.25],['Chennai unavailable',s.map((v,i)=>i==1?0:v),m,1]];
+ const rows=sc.map(([n,ss,mm,f])=>{const q=solve(c.map(a=>a.map(v=>v*f)),ss,mm);return{n,z:q.optCost,sh:q.shipped,um:Math.max(0,mm.reduce((p,v)=>p+v,0)-q.shipped)}});
+ $('st').innerHTML='<tr><th>Scenario</th><th>Total cost</th><th>Shipped</th><th>Unmet</th><th>₹ per unit</th></tr>'+rows.map(r=>`<tr><td>${r.n}</td><td>${inr(r.z)}</td><td>${Math.round(r.sh)}</td><td>${Math.round(r.um)}</td><td>${r.sh?(r.z/r.sh).toFixed(2):'–'}</td></tr>`).join('');
+ if(ch2)ch2.destroy();ch2=new Chart($('c2'),{type:'bar',data:{labels:rows.map(r=>r.n),datasets:[{data:rows.map(r=>r.sh?+(r.z/r.sh).toFixed(2):0),backgroundColor:cv('--ac'),borderRadius:8}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Optimized cost per unit shipped (₹)'}},scales:{y:{beginAtZero:true,grid:{color:gr}},x:{grid:{display:false},ticks:{maxRotation:40}}}}})}
+document.addEventListener('input',e=>{if(e.target.matches('input'))run()});
+$('mb').onclick=()=>document.querySelector('header').classList.toggle('open');
+document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>document.querySelector('header').classList.remove('open'));
+$('th').onclick=()=>{const r=document.documentElement,dk=matchMedia('(prefers-color-scheme:dark)').matches,cur=r.dataset.theme||(dk?'dark':'light');r.dataset.theme=cur=='dark'?'light':'dark';run()};
+run();
+</script></body></html>

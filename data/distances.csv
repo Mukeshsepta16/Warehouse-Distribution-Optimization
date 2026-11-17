@@ -1,0 +1,13 @@
+warehouse,store,distance_km
+Bengaluru,Mysuru,150
+Bengaluru,Mangaluru,350
+Bengaluru,Coimbatore,375
+Bengaluru,Vijayawada,650
+Chennai,Mysuru,475
+Chennai,Mangaluru,700
+Chennai,Coimbatore,500
+Chennai,Vijayawada,450
+Hyderabad,Mysuru,750
+Hyderabad,Mangaluru,875
+Hyderabad,Coimbatore,875
+Hyderabad,Vijayawada,275
